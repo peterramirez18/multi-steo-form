@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ubunto Regular */
+@font-face {
+    font-family: 'Ubunto';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../src/assets/fonts/Ubuntu-Regular.ttf');
+}
+
+/* Ubunto Bold */
+@font-face {
+    font-family: 'Ubunto';
+    font-style: bold;
+    font-weight: 700;
+    src: url('../src/assets/fonts/Ubuntu-Bold.ttf');
+}
+
+
+@layer utilities {
+    .heading {
+        @apply text-[2rem] font-bold text-marine-blue
+    }
+
+    .bodytext {
+        @apply text-cool-gray
+    }
+    .subtitle {
+        @apply bodytext mb-5 md:mb-[35px]
+    }
+
+    .input{
+        @apply border p-[10px] px-4 rounded-lg mb-[18px] mt-1 focus:outline-1 border-light-gray placeholder:text-cool-gray  focus:outline-purplish-blue text-marine-blue
+    }
+
+    .input-error{
+        @apply border-red-600 focus:outline-red-600 focus:outline-1
+    }
+}
+
