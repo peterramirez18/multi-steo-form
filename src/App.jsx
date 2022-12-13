@@ -12,6 +12,8 @@ import CheckIcon from "./assets/images/icon-checkmark.svg"
 
 // import componens
 import TextField from "./components/TextField"
+import { useFormik } from "formik"
+import { personalInfoSchema } from "./assets/schemas"
 
 function App() {
 
@@ -123,6 +125,19 @@ export default App
 
 
 function StepOne() {
+  const onSubmit = () => {
+    console.log("submitted")
+  }
+  const { errors, values, handleChange, onBlur, handleSubmit } = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      phoneNumber: "",
+    },
+    validationSchema: personalInfoSchema,
+    onSubmit,
+  })
+  console.log(errors)
   return (
     <motion.div
       initial={{ opacity: 0, y: -50 }}
@@ -132,10 +147,37 @@ function StepOne() {
       <h1 className="heading">Personal Info</h1>
       <p className="subtitle">Please provide your name, email address, and phone number.</p>
 
-      <form action="">
-        <TextField name="name" type="text" placeholder="e.g. Stephen King" label="Name" />
-        <TextField name="email" type="email" placeholder="e.g. stephenking@lorem.com" label="Email Address" />
-        <TextField name="phoneNumber" type="text" placeholder="e.g. +1 234 567 890" label="Phone Number" />
+      <form onSubmit={handleSubmit} action="">
+        <TextField
+          value={values.name}
+          onChange={handleChange}
+          onBlur={onBlur}
+          name="name"
+          type="text"
+          placeholder="e.g. Stephen King"
+          label="Name"
+          className={errors.name && 'input-error'}
+        />
+        <TextField
+          value={values.email}
+          onChange={handleChange}
+          onBlur={onBlur}
+          name="email"
+          type="email"
+          placeholder="e.g. stephenking@lorem.com"
+          label="Email Address"
+          className={errors.email && 'input-error'}
+        />
+        <TextField
+          value={values.phoneNumber}
+          onChange={handleChange}
+          onBlur={onBlur}
+          name="phoneNumber"
+          type="text"
+          placeholder="e.g. +1 234 567 890"
+          label="Phone Number"
+          className={errors.phoneNumber && 'input-error'}
+        />
       </form>
     </motion.div>
   )
