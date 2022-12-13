@@ -40,8 +40,7 @@ function App() {
   const [plan, setPlan] = useState(['Arcade', 9])
   const [isMonthly, setIsMonthly] = useState(true)
   // STEP THREE
-  const [radioSelect, setRadioSelect] = useState([])
-  console.log(radioSelect)
+  const [addonsSelect, setAddonsSelect] = useState([])
 
   // functions
   const handdleStep = (e) => {
@@ -89,13 +88,13 @@ function App() {
               <StepTwo plan={plan} setPlan={setPlan} isMonthly={isMonthly} setIsMonthly={setIsMonthly} />
             }
             {currentStep === 3 &&
-              <StepThree isMonthly={isMonthly} radioSelect={radioSelect} setRadioSelect={setRadioSelect} />
+              <StepThree isMonthly={isMonthly} addonsSelect={addonsSelect} setAddonsSelect={setAddonsSelect} />
             }
             {currentStep === 4 &&
               <StepFour
                 plan={plan}
                 isMonthly={isMonthly}
-                radioSelect={radioSelect}
+                addonsSelect={addonsSelect}
               />
             }
             {currentStep === 5 &&
@@ -215,27 +214,56 @@ function StepTwo({ plan, setPlan, isMonthly, setIsMonthly }) {
     </motion.div>
   )
 }
-function StepThree({ radioSelect, setRadioSelect, isMonthly }) {
+function StepThree({ addonsSelect, setAddonsSelect, isMonthly }) {
   const addons = [
     {
+      id: 0,
       name: 'Online service',
       info: 'Access to multiplayer games',
       price: 1
     },
     {
+      id: 1,
       name: 'Larger storage',
       info: 'Extra 1TB of cloud save',
       price: 2
     },
     {
+      id: 2,
       name: 'Customizable profile',
       info: 'Custom theme on your profile',
       price: 2
     }
   ]
+  const ids = addonsSelect.map((obj) => obj.id);
   // funtions
-  const handleCheckMark = (name) => {
-    setRadioSelect(x => x.includes(name) ? x.filter(n => n !== name) : [name, ...x])
+  const handleAddAddons = (aid, name, price) => {
+    const newAddons = {
+      id: aid,
+      name: name,
+      price: price
+    }
+    if (ids.includes(aid)) {
+      return (
+        <></>
+      )
+    } else {
+      setAddonsSelect([...addonsSelect, newAddons])
+    }
+  }
+  const handleRemoveAddons = (aid) => {
+    const newAddons = addonsSelect.filter((a) => a.id !== aid)
+    if (ids.includes(aid)) {
+      return (
+        setAddonsSelect(newAddons)
+      )
+    } else {
+
+    }
+  }
+  const handleClickAddons = (aid, name, price) => {
+    handleAddAddons(aid, name, price)
+    handleRemoveAddons(aid)
   }
   return (
     <motion.div
@@ -249,14 +277,14 @@ function StepThree({ radioSelect, setRadioSelect, isMonthly }) {
         {addons.map((item, i) => {
           return (
             <div
-              key={i}
-              onClick={() => handleCheckMark(item.name)}
-              className={`${radioSelect.includes(item.name) ? ' border-purplish-blue bg-purplish-blue/10' : ''} cursor-pointer hover:border-purplish-blue rounded-md p-3 px-6 flex items-center border w-full`}>
+              key={item.id}
+              onClick={() => handleClickAddons(item.id, item.name, item.price)}
+              className={`${ids.includes(item.id) ? ' border-purplish-blue bg-purplish-blue/10' : ''} cursor-pointer hover:border-purplish-blue rounded-md p-3 px-6 flex items-center border w-full`}>
 
               {/* check */}
               <div
-                className={`${radioSelect.includes(item.name) ? 'bg-purplish-blue' : ''} border w-5 h-5 rounded-md grid place-content-center mr-6`}>
-                {radioSelect.includes(item.name) &&
+                className={`${ids.includes(item.id) ? 'bg-purplish-blue' : ''} border w-5 h-5 rounded-md grid place-content-center mr-6`}>
+                {ids.includes(item.id) &&
                   <img src={CheckIcon} alt="" />
                 }
               </div>
@@ -274,7 +302,12 @@ function StepThree({ radioSelect, setRadioSelect, isMonthly }) {
     </motion.div>
   )
 }
-function StepFour({ plan, isMonthly, radioSelect, }) {
+function StepFour({ plan, isMonthly, addonsSelect, }) {
+
+  // sumar all prices
+  const totalPrices = addonsSelect.reduce((accumulator, object) => {
+    return accumulator + object.price;
+  }, 0);
   return (
     <motion.div
       initial={{ opacity: 0, y: -50 }}
@@ -293,19 +326,21 @@ function StepFour({ plan, isMonthly, radioSelect, }) {
           </div>
           <span className=" text-marine-blue font-bold">${plan[1]}/{isMonthly ? 'mo' : 'yr'}</span>
         </div>
-        {radioSelect.length > 0 && <hr className=" my-4" />}
+        {addonsSelect.length > 0 && <hr className=" my-4" />}
         <div className=" flex flex-col gap-y-2">
-          {radioSelect.map((item) => (
-            <div className=" text-sm flex justify-between items-center">
-              <span>{item}</span>
-              <span className=" text-marine-blue">+${ }/{isMonthly ? 'mo' : 'yr'}</span>
+          {addonsSelect.map((item) => (
+            <div
+              key={item.id}
+              className=" text-sm flex justify-between items-center">
+              <span>{item.name}</span>
+              <span className=" text-marine-blue">+${item.price}/{isMonthly ? 'mo' : 'yr'}</span>
             </div>
           ))}
         </div>
       </div>
       <div className=" px-6 mt-6 text-gray-500 flex items-center justify-between">
         <span>Total ({isMonthly ? 'per month' : 'yearly'})</span>
-        <span className=" text-lg font-bold text-purplish-blue">+${plan[1] + ''}/{isMonthly ? 'mo' : 'yr'}</span>
+        <span className=" text-lg font-bold text-purplish-blue">+${plan[1] + totalPrices}/{isMonthly ? 'mo' : 'yr'}</span>
       </div>
     </motion.div>
   )
